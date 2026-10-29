@@ -89,7 +89,9 @@ container.insertAdjacentHTML("beforeend", createMarkup(images));
 container.addEventListener("click", handleClick);
 function handleClick(event) {
   event.preventDefault(); // запретить стандартное поведение ссылки <a> при клике - браузер не будет переходить по адресу из href
+
   console.log(event.target); // Event Target будет всегда img, т к в моей стр-ре изображение <img> находится внутри ссылки <a> и полностью занимает её видимую обл-ть
+  
   if(!event.target.classList.contains("gallery-image")) {
     return;
   }
@@ -106,19 +108,28 @@ function handleClick(event) {
     </div>`,
     {
       onShow() {
-        document.addEventListener('keydown', onEscape);
+        document.addEventListener('keydown',
+         e => {
+          if (e.code !== 'Escape') return;
+          instance.close();
+          }
+        );
       },
       onClose() {
-        document.removeEventListener('keydown', onEscape);
+        document.removeEventListener('keydown',
+          e => {
+          if (e.code !== 'Escape') return;
+          instance.close();
+          });
       },
     });
   
   // Проверяем нажатую клавишу
   // Объявляется onEscape, e — объект события клавиатуры
-  const onEscape = e => {
-    if (e.code !== 'Escape') return;
-    instance.close();
-  };
+  // const onEscape = e => {
+  //   if (e.code !== 'Escape') return;
+  //   instance.close();
+  // };
 
   instance.show(); // открывает окно
 };
