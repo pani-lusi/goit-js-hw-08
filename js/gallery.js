@@ -91,7 +91,7 @@ function handleClick(event) {
   event.preventDefault(); // запретить стандартное поведение ссылки <a> при клике - браузер не будет переходить по адресу из href
 
   console.log(event.target); // Event Target будет всегда img, т к в моей стр-ре изображение <img> находится внутри ссылки <a> и полностью занимает её видимую обл-ть
-  
+
   if(!event.target.classList.contains("gallery-image")) {
     return;
   }
@@ -102,25 +102,26 @@ function handleClick(event) {
   // onShow() — ф-я, к-ю библ-ка выз-т при показе модаль.окна:
   // пока модаль.окно открыто, следит за нажатиями клавиш на док-е и вызывает onEscape. Слушатель добавлен на document, а не на изображение, т к клавишу Esc нужно ловить, даже если фокус не находится непосредственно на картинке
   // onClose() выз-ся при закрытии модаль.окна, удаляет обр-к клав-ры, чтобы он не продолжал работать, когда окно закрыто
-  const instance = basicLightbox.create(`
+
+  // Сначала объявляем переменную
+  let instance;
+
+  // Затем объявляем обработчик Escape
+  const onEscape = e => {
+    if (e.code !== "Escape") return;
+    instance.close();
+  };
+
+  instance = basicLightbox.create(`
     <div class="modal">
       <img src="${source}" alt="${alt}"/>
     </div>`,
     {
       onShow() {
-        document.addEventListener('keydown',
-         e => {
-          if (e.code !== 'Escape') return;
-          instance.close();
-          }
-        );
+        document.addEventListener('keydown', onEscape);
       },
       onClose() {
-        document.removeEventListener('keydown',
-          e => {
-          if (e.code !== 'Escape') return;
-          instance.close();
-          });
+        document.removeEventListener('keydown', onEscape);
       },
     });
   
